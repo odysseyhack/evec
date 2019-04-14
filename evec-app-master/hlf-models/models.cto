@@ -1,0 +1,51 @@
+namespace com.evec
+
+participant Company identified by id {
+  o String id
+  o String name
+  o Integer reputation
+}
+
+participant CompanyEmployee identified by id {
+  o String id
+  --> Company company
+}
+
+asset Substance identified by id {
+  o String id
+  o String hazardIdentificationNumber
+  o String unNumber
+}
+
+asset OwnedSubstance identified by id {
+  o String id
+  --> Substance substance
+  --> Company currentOwner
+}
+
+asset Container identified by id {
+  o String id
+  --> OwnedSubstance substance optional
+  --> Company owner
+}
+
+asset Vehicle identified by id {
+  o String id
+  --> CompanyEmployee driver
+  --> Container container optional
+}
+
+abstract transaction TransferOwnership {
+  --> CompanyEmployee currentOwner
+  --> CompanyEmployee receiver
+}
+
+transaction FillContainer extends TransferOwnership {
+  --> Container container
+  --> OwnedSubstance substance
+}
+
+transaction LoadVehicle extends TransferOwnership {
+  --> Vehicle vehicle
+  --> Container container
+}
